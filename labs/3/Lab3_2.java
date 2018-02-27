@@ -18,13 +18,21 @@ public class Lab3_2 {
         } else if (i >= p.length()) {
           newP += s;
         }
-        getHexMatP(s, newP);
+        System.out.println(getHexMatP(s, newP)); //puts out garbage
         newP = "";
       }
     }
   }
 
-  static int[][] getHexMatP(char s, String p) {
-    //TODO
+  static byte[][] getHexMatP(char s, String p) {
+    byte[][] cipher = new byte[4][4];
+    for (int row = 0; row < 4; row++) {
+      for (int col = 0; col < 4; col++) {
+        for (int i = 0; i < p.length(); i++) {
+          cipher[row][col] = (byte) p.charAt(i);
+        }
+      }
+    }
+    return cipher;
   }
 }
