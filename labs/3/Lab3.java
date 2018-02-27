@@ -21,11 +21,11 @@ public class Lab3 {
   }
 
   static int cofModDet(int m, int[][] A) {
-    int det = 0;
+    int det;
     if (A.length == 1) {
-      return (A[0][0] % m);
+      return (A[0][0]);
     } else if (A.length == 2) {
-      return ((A[0][0] % m) * (A[1][1] % m) - (A[0][1] % m) * (A[1][0] % m)); //m?
+      return (A[0][0] * A[1][1] - A[0][1] * A[1][0]);
     } else {
       det = 0;
       for (int i = 0; i < A.length; i++) {
@@ -48,6 +48,6 @@ public class Lab3 {
         det += n * A[0][i] * (cofModDet(m, newA));
       }
     }
-    return det;
+    return det%m;
   }
 }
