@@ -10,11 +10,6 @@ public class Lab3_2 {
     char s = input.nextLine().charAt(0);
     String p = input.nextLine();
 
-    splitPSoup(s, p);
-
-  }
-
-  static String splitPSoup(char s, String p) {
     String newP = "";
     while (newP.length() < 16) {
       for (int i = 0; i <= p.length(); i++) {
@@ -23,9 +18,12 @@ public class Lab3_2 {
         } else if (i >= p.length()) {
           newP += s;
         }
+        getHexMatP(s, newP);
+        newP = "";
       }
     }
   }
+
 
   static int[][] getHexMatP(char s, String p) {
     //TODO
