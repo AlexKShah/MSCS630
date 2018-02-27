@@ -11,8 +11,8 @@ public class Lab3_2 {
     String p = input.nextLine();
 
     String newP = "";
-    while (newP.length() < 16) {
-      for (int i = 0; i <= p.length(); i++) {
+    for (int i = 0; i <= p.length(); i++) {
+      while (newP.length() < 16) {
         if (i < p.length()) {
           newP += p.charAt(i);
         } else if (i >= p.length()) {
@@ -23,7 +23,6 @@ public class Lab3_2 {
       }
     }
   }
-
 
   static int[][] getHexMatP(char s, String p) {
     //TODO
