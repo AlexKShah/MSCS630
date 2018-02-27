@@ -25,26 +25,28 @@ public class Lab3 {
     if (A.length == 1) {
       return (A[0][0] % m);
     } else if (A.length == 2) {
-      return (A[0][0]*A[1][1] - A[0][1]*A[1][0]); //m?
-    }
-    for (int i = 0; i < A.length; i++) {
-      int[][] newA = new int[A.length - 1][A.length - 1];
-      for (int j = 1; j < A.length; j++) {
-        for (int k = 0; k < A.length; k++) {
-          if (k < i) {
-            newA[j - 1][k] = A[j][k];
-          } else if (k > i) {
-            newA[j - 1][k - 1] = A[j][k];
+      return ((A[0][0] % m) * (A[1][1] % m) - (A[0][1] % m) * (A[1][0] % m)); //m?
+    } else {
+      det = 0;
+      for (int i = 0; i < A.length; i++) {
+        int[][] newA = new int[A.length - 1][A.length - 1];
+        for (int j = 1; j < A.length; j++) {
+          for (int k = 0; k < A.length; k++) {
+            if (k < i) {
+              newA[j - 1][k] = A[j][k];
+            } else if (k > i) {
+              newA[j - 1][k - 1] = A[j][k];
+            }
           }
         }
+        int n;
+        if (i % 2 == 0) {
+          n = 1;
+        } else {
+          n = -1;
+        }
+        det += n * A[0][i] * (cofModDet(m, newA));
       }
-      int n;
-      if (i % 2 == 0) {
-        n = 1;
-      } else {
-        n = -1;
-      }
-      det += n * A[0][i] * (cofModDet(m, newA));
     }
     return det;
   }
