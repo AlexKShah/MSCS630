@@ -6,34 +6,46 @@
 import java.util.Scanner;
 
 public class Lab3 {
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        //pick 32 bit type
-        int m = input.nextInt();
-        int n = input.nextInt();
-        int[][] A = new int[n][n];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                A[i][j] = input.nextInt();
-            }
-        }
-        int det = cofModDet(m, A);
+  public static void main(String[] args) {
+    Scanner input = new Scanner(System.in);
+    int m = input.nextInt();
+    int n = input.nextInt();
+    int[][] A = new int[n][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        A[i][j] = input.nextInt();
+      }
     }
-    static int cofModDet(int m, int[][] a) {
-        int det = 0;
-        int n = A[0].length; //square
-        if (n==1){
-            //1x1 = A
-            det = A[0][0];
-        } else if (n==2) {
-            //2x2 = AD-CB
-            det = (A[0][0]*A[1][1] - A[0][1]*A[1][0]);
-        } else if (n==3) {
-            //3x3 =
-        } else {
+    int det = cofModDet(m, A);
+    System.out.println(det);
+  }
 
-        }
-        return det;
+  static int cofModDet(int m, int[][] A) {
+    int det = 0;
+    if (A.length == 1) {
+      return (A[0][0] % m);
+    } else if (A.length == 2) {
+      return (A[0][0]*A[1][1] - A[0][1]*A[1][0]); //m?
     }
+    for (int i = 0; i < A.length; i++) {
+      int[][] newA = new int[A.length - 1][A.length - 1];
+      for (int j = 1; j < A.length; j++) {
+        for (int k = 0; k < A.length; k++) {
+          if (k < i) {
+            newA[j - 1][k] = A[j][k];
+          } else if (k > i) {
+            newA[j - 1][k - 1] = A[j][k];
+          }
+        }
+      }
+      int n;
+      if (i % 2 == 0) {
+        n = 1;
+      } else {
+        n = -1;
+      }
+      det += n * A[0][i] * (cofModDet(m, newA));
+    }
+    return det;
+  }
 }
