@@ -9,28 +9,36 @@ public class Lab3_2 {
     Scanner input = new Scanner(System.in);
     char s = input.nextLine().charAt(0);
     String p = input.nextLine();
-    String newP = "";
-    for (int i = 0; i <= p.length(); i++) {
-      while (newP.length() < 16) {
-        if (i < p.length()) {
-          newP += p.charAt(i);
-        } else if (i >= p.length()) {
-          newP += s;
-        }
-        getHexMatP(s, newP);
+
+    //pad input string with character s
+    StringBuffer newP = new StringBuffer(p);
+    while (newP.length() % 16 != 0) {
+      newP.append(s);
+    }
+
+    //turn ascii text into hexadecimal
+    StringBuffer hexP = new StringBuffer();
+    for (int i = 0; i < newP.length(); i++) {
+      hexP.append(Integer.toHexString(newP.charAt(i)).toUpperCase());
+    }
+
+    //break p into chunks, process one 4x4 at a time
+    StringBuffer partP = new StringBuffer();
+    for (int i = 0; i < hexP.length(); i++) {
+      if (partP.length() % 32 == 0) {
+        getHexMatP(s, partP.toString());
+      } else {
+        partP.append(hexP.charAt(i));
+        partP.append(hexP.charAt(i+1));
       }
+      partP = new StringBuffer();
     }
   }
-
+  //iterate through 4x4, add to cipher, print
   static int[][] getHexMatP(char s, String p) {
     int[][] cipher = new int[4][4];
     for (int i = 0; i < p.length(); i++) {
-      for (int row = 0; row < 4; row++) {
-        for (int col = 0; col < 4; col++) {
-          cipher[row][col] = (int) p.charAt(i);
-          System.out.println(cipher[row][col]); //prints "97" a bunch, why?
-        }
-      }
+      for()
     }
     return cipher;
   }

@@ -23,9 +23,9 @@ public class Lab3 {
   static int cofModDet(int m, int[][] A) {
     int det;
     if (A.length == 1) {
-      return (A[0][0]);
+      return (A[0][0])%m;
     } else if (A.length == 2) {
-      return (A[0][0] * A[1][1] - A[0][1] * A[1][0]);
+      return ( (A[0][0]%m) * (A[1][1]%m) - (A[0][1]%m) * (A[1][0]%m) ;
     } else {
       det = 0;
       for (int i = 0; i < A.length; i++) {
