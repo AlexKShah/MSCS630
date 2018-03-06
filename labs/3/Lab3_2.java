@@ -37,9 +37,12 @@ public class Lab3_2 {
       String hex2 = Character.toString(hexP.charAt(i + 1));
       for (int col = 0; col < 4; col++) {
         for (int row = 0; row < 4; row++) {
-          cipher[row][col] = hex1.concat(hex2);
-          //printing cipher[row][col] gives a lot of dupes?
+          String hexFull = hex1.concat(hex2);
+          cipher[row][col] = hexFull;
         }
+      }
+      for (int j = 0; j < 4; j++) {
+        System.out.println(cipher[j][0] + " " + cipher[j][1] + " " + cipher[j][2] + " " + cipher[j][3]);
       }
     }
     return cipher;
