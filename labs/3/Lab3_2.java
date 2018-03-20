@@ -1,5 +1,18 @@
 import java.util.Scanner;
 
+/**
+ * file: Lab3_2.java
+ * author: Alex Shah
+ * course: MSCS 630
+ * assignment: Lab 3 part 2
+ * due date: 3/19/18
+ * version: 1.0
+ *
+ * Create a hexadecimal cipher text
+ * matrix from a given plaintext,
+ * in a padded 4x4 layout.
+ */
+
 public class Lab3_2 {
   public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
@@ -17,7 +30,7 @@ public class Lab3_2 {
       if (i % 16 == 0 || i == 0) {
         String[][] result = new String[4][4];
         result = getHexMatP(s, newP.toString().substring(i, i + 16));
-        //do something with result, but it's already printed
+        //do something with result here
       }
     }
   }
@@ -30,20 +43,32 @@ public class Lab3_2 {
     for (int i = 0; i < p.length(); i++) {
       hexP.append(Integer.toHexString(p.charAt(i)).toUpperCase());
     }
+    //for now keep it in a linear array
+    String[] cipherString = new String[hexP.length()];
 
-    //hexadecimal is two characters, make sure both get added
+    //hexadecimal is two characters, add them both to one element
     for (int i = 0; i < hexP.length() - 1; i += 2) {
       String hex1 = Character.toString(hexP.charAt(i));
       String hex2 = Character.toString(hexP.charAt(i + 1));
-      for (int col = 0; col < 4; col++) {
-        for (int row = 0; row < 4; row++) {
-          String hexFull = hex1.concat(hex2);
-          cipher[row][col] = hexFull;
-        }
+      //make sure we start with, and incrementally add hexadecimal
+      if (i == 0) {
+        cipherString[i] = hex1.concat(hex2);
+      } else {
+        cipherString[i / 2] = hex1.concat(hex2);
       }
-      for (int j = 0; j < 4; j++) {
-        System.out.println(cipher[j][0] + " " + cipher[j][1] + " " + cipher[j][2] + " " + cipher[j][3]);
-      }
+    }
+    //iterate through 4x4 matrix cipher and add the hexadecimal
+    //elements from our String array to the String Matrix
+    for (int j = 0; j < 4; j++) {
+      int count = j * 4;
+      cipher[0][j] = cipherString[count];
+      cipher[1][j] = cipherString[count + 1];
+      cipher[2][j] = cipherString[count + 2];
+      cipher[3][j] = cipherString[count + 3];
+    }
+    //print out the cipher text matrix for verification
+    for (int k = 0; k < cipher.length; k++) {
+      System.out.println(cipher[k][0] + " " + cipher[k][1] + " " + cipher[k][2] + " " + cipher[k][3]);
     }
     return cipher;
   }

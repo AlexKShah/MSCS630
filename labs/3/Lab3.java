@@ -1,9 +1,15 @@
-// Determinant Algorithm
-// Alex Shah
-// MSCS 630
-// 2/14/18
-
 import java.util.Scanner;
+
+/**
+ * file: Lab3.java
+ * author: Alex Shah
+ * course: MSCS 630
+ * assignment: Lab 3 part 1
+ * due date: 3/19/18
+ * version: 1.0
+ *
+ * Calculate the determinant of any sized matrix
+ */
 
 public class Lab3 {
   public static void main(String[] args) {
@@ -23,9 +29,9 @@ public class Lab3 {
   static int cofModDet(int m, int[][] A) {
     int det;
     if (A.length == 1) {
-      return (A[0][0])%m;
+      return (A[0][0]) % m;
     } else if (A.length == 2) {
-      return ( (A[0][0]%m) * (A[1][1]%m) - (A[0][1]%m) * (A[1][0]%m) ;
+      return ((A[0][0] % m) * (A[1][1] % m) - (A[0][1] % m) * (A[1][0] % m);
     } else {
       det = 0;
       for (int i = 0; i < A.length; i++) {
@@ -48,6 +54,6 @@ public class Lab3 {
         det += n * A[0][i] * (cofModDet(m, newA));
       }
     }
-    return det%m;
+    return det % m;
   }
 }
