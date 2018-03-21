@@ -30,6 +30,7 @@ public class Lab3_2 {
       if (i % 16 == 0 || i == 0) {
         String[][] result = new String[4][4];
         result = getHexMatP(s, newP.toString().substring(i, i + 16));
+        System.out.println("\n");
         //do something with result here
       }
     }
@@ -70,6 +71,7 @@ public class Lab3_2 {
     for (int k = 0; k < cipher.length; k++) {
       System.out.println(cipher[k][0] + " " + cipher[k][1] + " " + cipher[k][2] + " " + cipher[k][3]);
     }
+
     return cipher;
   }
 }

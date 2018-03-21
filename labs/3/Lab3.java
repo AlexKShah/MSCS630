@@ -31,7 +31,7 @@ public class Lab3 {
     if (A.length == 1) {
       return (A[0][0]) % m;
     } else if (A.length == 2) {
-      return ((A[0][0] % m) * (A[1][1] % m) - (A[0][1] % m) * (A[1][0] % m);
+      return ((A[0][0] % m) * (A[1][1] % m) - (A[0][1] % m) * (A[1][0] % m));
     } else {
       det = 0;
       for (int i = 0; i < A.length; i++) {
