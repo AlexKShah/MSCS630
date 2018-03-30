@@ -8,6 +8,7 @@
  * <p>
  * templating Lab4 steps
  */
+//TODO All the functions, use [][] from lab 3??
 
 public class AESCipher {
   private static final char[] sbox = {
@@ -51,9 +52,11 @@ public class AESCipher {
     //String[] roundKeysHex = aesRoundKeys(String KeyHex);
     //outHex = aesSBox(inHex);
     //outHex = aesRcon(round);
+    String result = "";
 
-    for (int p=0; p<key.length(); p+=2) {
-      outHex = aesSBox(key.substring(p, p+2)));
+    for(i=0;i<10;i++) {
+      outHex=
+      result += outHex + "\n";
     }
   }
   public static String aesRoundKeys(String KeyHex) {
