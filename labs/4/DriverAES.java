@@ -19,6 +19,6 @@ public class DriverAES {
     //print initial key
     System.out.println(key);
     //do stuff to key to get 10 generated keys
-    //System.out.println(AESCipher.AES(key));
+    System.out.println(AESCipher.aesRoundKeys(key));
   }
 }
