@@ -8,7 +8,7 @@
  * <p>
  * templating Lab4 steps
  */
-//TODO All the functions, use [][] from lab 3??
+//TODO All the functions, will do [][], format, pass through aes logic, get output as String, return all keys in main "results"
 
 public class AESCipher {
   private static final char[] sbox = {
@@ -53,15 +53,72 @@ public class AESCipher {
     //outHex = aesSBox(inHex);
     //outHex = aesRcon(round);
     String result = "";
-
+    outHex=getHexMatP(key);
     for(i=0;i<10;i++) {
-      outHex=
-      result += outHex + "\n";
+      //TODO do AES logic
+      String nextKey = aesRoundKeys(outHex);
+      result += nextKey+ "\n";
     }
   }
+
+  //TODO this is a pasted mess, sort out variables and process key to hex then send out as [][]
+  static String[][] getHexMatP(key) {
+    //pad input string with character s
+    StringBuffer newP = new StringBuffer(key);
+    while (newP.length() % 16 != 0) {
+      newP.append();
+    }
+
+    //send one 4x4 at a time to get a hex matrix
+    for (int i = 0; i < newP.length() - 1; i++) {
+      if (i % 16 == 0 || i == 0) {
+        String[][] result = new String[4][4];
+        result = getHexMatP(s, newP.toString().substring(i, i + 16));
+      }
+    }
+    String[][] cipher = new String[4][4];
+
+    //turn ascii text into hexadecimal
+    StringBuffer hexP = new StringBuffer();
+    for (int i = 0; i < p.length(); i++) {
+      hexP.append(Integer.toHexString(p.charAt(i)).toUpperCase());
+    }
+    //for now keep it in a linear array
+    String[] cipherString = new String[hexP.length()];
+
+    //hexadecimal is two characters, add them both to one element
+    for (int i = 0; i < hexP.length() - 1; i += 2) {
+      String hex1 = Character.toString(hexP.charAt(i));
+      String hex2 = Character.toString(hexP.charAt(i + 1));
+      //make sure we start with, and incrementally add hexadecimal
+      if (i == 0) {
+        cipherString[i] = hex1.concat(hex2);
+      } else {
+        cipherString[i / 2] = hex1.concat(hex2);
+      }
+    }
+    //iterate through 4x4 matrix cipher and add the hexadecimal
+    //elements from our String array to the String Matrix
+    for (int j = 0; j < 4; j++) {
+      int count = j * 4;
+      cipher[0][j] = cipherString[count];
+      cipher[1][j] = cipherString[count + 1];
+      cipher[2][j] = cipherString[count + 2];
+      cipher[3][j] = cipherString[count + 3];
+    }
+    //print out the cipher text matrix for verification
+    for (int k = 0; k < cipher.length; k++) {
+      System.out.println(cipher[k][0] + " " + cipher[k][1] + " " + cipher[k][2] + " " + cipher[k][3]);
+    }
+
+    return cipher;
+  }
+  //TODO AES logic, rounds
   public static String aesRoundKeys(String KeyHex) {
+    //Logic!
     return "";
   }
+  //Only does SBox substitution
   public static String aesSBox(String inHex) {
     //hex to int for index
     int index = Integer.parseInt(inHex, 16);
@@ -70,6 +127,7 @@ public class AESCipher {
     String xAsHex = Integer.toHexString((int) x).toUpperCase();
     return xAsHex;
   }
+  //Only does Rcon substitution
   public static String aesRcon(int round) {
     return 0;
   }
