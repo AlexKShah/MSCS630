@@ -9,6 +9,8 @@
  * Given an initial key, generate 10 round keys according to AES definition
  */
 
+// TODO XOR doesn't work
+
 public class AESCipher {
 
   /**
@@ -68,14 +70,17 @@ public class AESCipher {
       if (j%4!=0) {
         // 3a: w(j) = w(j − 4) XOR w(j − 1)
         for(int row = 0; row < 4; row ++) {
-          W[row][j] = W[row][j-4] ^ W[row][j-1];
+          int A = Integer.parseInt(W[row][j-4], 16);
+          int B = Integer.parseInt(W[row][j-1], 16);
+          W[row][j] = (A.charAt(0))^(B.charAt(0));
+
         }
       } else {
         // 3b
         // wnew = [ (Rcon(i) XOR Sbox(w1,j−1)), Sbox(w2,j−1), Sbox(w3,j−1), Sbox(w0,j−1) ]
         // w(j) = w(j − 4) XOR wnew
         String[] wnew = new String[4];
-        int rconValue = aesRcon(j);
+        String rconValue = aesRcon(j);
         wnew[0] = rconValue ^ aesSBox(W[1][j-1]);
         wnew[1] = aesSBox(W[2][j-1]);
         wnew[2] = aesSBox(W[3][j-1]);
@@ -117,7 +122,10 @@ public class AESCipher {
    * @return - Substituted value
    */
   static String aesRcon(int round) {
-    return rcon[0][round/4];
+    //TODO is it supposed to be round over 4 or just round?
+    char x = rcon[(int) Math.floor(round/4)];
+    String xAsHex = Integer.toHexString((int) x).toUpperCase();
+    return xAsHex;
   }
 
   // SBox Substitutions
