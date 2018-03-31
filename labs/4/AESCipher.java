@@ -13,6 +13,7 @@ public class AESCipher {
 
   /**
    * Receive initial key, process key and generate 10 round keys
+   *
    * @param keyHex - initial key as a String
    * @return keys - the 10 generated round keys
    */
@@ -29,10 +30,11 @@ public class AESCipher {
 
   /**
    * converts a String key to 4x4 String[][] hex representation
+   *
    * @param key - key as String to be converted
    * @return cipher - String[][] hex format of key
    */
-  static String[][] getMatrix(String key){
+  static String[][] getMatrix(String key) {
     String[][] cipher = new String[4][4];
     for (int i = 0; i < key.length(); i += 2) {
       for (int col = 0; col < 4; col++) {
@@ -46,17 +48,56 @@ public class AESCipher {
 
   /**
    * Performs steps to get AES round keys
+   *
    * @param inHex - original key as 4x4 matrix
    * @return keys - original key + 10 round keys
    */
-  static String[] AESKeygen(String[][] inHex){
-    // use sbox, rcon, xor (^)
+  static String[] AESKeygen(String[][] inHex) {
+    String[][] W = new String[4][44];
+    // round 0
+    // first 4 columns of W are first 4 columns of inHex
+    for(int i=0; i<4; i++) {
+      W[i][0] = inHex[i][0];
+      W[i][1] = inHex[i][1];
+      W[i][2] = inHex[i][2];
+      W[i][3] = inHex[i][3];
+    }
+    // other rounds
+    for(int j=0; j<44; j++) {
+      // Column not multiple of 4
+      if (j%4!=0) {
+        // 3a: w(j) = w(j − 4) XOR w(j − 1)
+        for(int row = 0; row < 4; row ++) {
+          W[row][j] = W[row][j-4] ^ W[row][j-1];
+        }
+      } else {
+        // 3b
+        // wnew = [ (Rcon(i) XOR Sbox(w1,j−1)), Sbox(w2,j−1), Sbox(w3,j−1), Sbox(w0,j−1) ]
+        // w(j) = w(j − 4) XOR wnew
+        String[] wnew = new String[4];
+        int rconValue = aesRcon(j);
+        wnew[0] = rconValue ^ aesSBox(W[1][j-1]);
+        wnew[1] = aesSBox(W[2][j-1]);
+        wnew[2] = aesSBox(W[3][j-1]);
+        wnew[3] = aesSBox(W[0][j-1]);
+
+        for(int row = 0; row < 4; row ++) {
+          W[row][j] = W[row][j-4] ^ wnew[row];
+        }
+      }
+    }
     String[] keys = new String[11];
+    for(int row = 0; row < 4; row ++) {
+      for(int col = 0; col < 44; col ++) {
+        keys[row]+= W[row][col];
+      }
+    }
     return keys;
   }
 
   /**
    * Substitutes initial hex value with SBox defined subsitution
+   *
    * @param inHex - Character to subsitute
    * @return xAsHex - SBox substituted character in hex
    */
@@ -71,14 +112,15 @@ public class AESCipher {
 
   /**
    * Substitutes value based on which round we're on
+   *
    * @param round - the current round
    * @return - Substituted value
    */
   static String aesRcon(int round) {
-    return "";
+    return rcon[0][round/4];
   }
 
-  // SBox Subsitutions
+  // SBox Substitutions
   private static final char[] sbox = {
       0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
       0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
@@ -98,7 +140,7 @@ public class AESCipher {
       0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16
   };
 
-  // Rcon Subsitutions
+  // Rcon Substitutions
   private static final char[] rcon = {
       0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
       0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39,
@@ -117,5 +159,4 @@ public class AESCipher {
       0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd,
       0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
   };
-
 }
