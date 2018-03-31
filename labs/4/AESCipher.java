@@ -21,9 +21,9 @@ public class AESCipher {
     //make key 4x4
     String[][] outHex = String[4][4];
     outHex = getMatrix(keyHex);
-    //return 11 keys
-    String[] keys = new String[11];
-    keys = aesRoundKeys(outHex);
+    //return 10 generated keys
+    String[] keys = new String[10];
+    keys = AESKeygen(outHex);
     return keys;
   }
 

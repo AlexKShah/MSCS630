@@ -18,7 +18,11 @@ public class DriverAES {
     String key = input.next().toUpperCase();
     //print initial key
     System.out.println(key);
-    //do stuff to key to get 10 generated keys
-    System.out.println(AESCipher.aesRoundKeys(key));
+    //Get and print 10 generated keys
+    String[] keys = new String[10];
+    keys = AESCipher.aesRoundKeys(key));
+    for (int i = 0; i < 10; i++) {
+      System.out.println(keys[i]);
+    }
   }
 }
