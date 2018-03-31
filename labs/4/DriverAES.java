@@ -8,7 +8,7 @@ import java.util.Scanner;
  * due date: 4/4/18
  * version: 1.0
  * <p>
- * templating Lab4 steps
+ * Receive an inputted key to generate and print AES round keys
  */
 
 public class DriverAES {

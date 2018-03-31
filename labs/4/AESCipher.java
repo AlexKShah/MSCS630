@@ -6,11 +6,16 @@
  * due date: 4/4/18
  * version: 1.0
  * <p>
- * templating Lab4 steps
+ * Given an initial key, generate 10 round keys according to AES definition
  */
 
 public class AESCipher {
 
+  /**
+   * Receive initial key, process key and generate 10 round keys
+   * @param keyHex - initial key as a String
+   * @return keys - the 10 generated round keys
+   */
   public static String aesRoundKeys(String keyHex) {
     String result = "";
     //make key 4x4
@@ -19,7 +24,6 @@ public class AESCipher {
     //return 11 keys
     String[] keys = new String[11];
     keys = aesRoundKeys(outHex);
-    }
     return keys;
   }
 
@@ -56,7 +60,7 @@ public class AESCipher {
    * @param inHex - Character to subsitute
    * @return xAsHex - SBox substituted character in hex
    */
-  public static String aesSBox(String inHex) {
+  static String aesSBox(String inHex) {
     //hex to int for index
     int index = Integer.parseInt(inHex, 16);
     char x = sbox[index];
@@ -70,7 +74,7 @@ public class AESCipher {
    * @param round - the current round
    * @return - Substituted value
    */
-  public static String aesRcon(int round) {
+  static String aesRcon(int round) {
     return "";
   }
 
