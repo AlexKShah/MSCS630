@@ -20,7 +20,7 @@ public class DriverAES {
     System.out.println(key);
     //Get and print 10 generated keys
     String[] keys = new String[10];
-    keys = AESCipher.aesRoundKeys(key));
+    keys = AESCipher.aesRoundKeys(key);
     for (int i = 0; i < 10; i++) {
       System.out.println(keys[i]);
     }

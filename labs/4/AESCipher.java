@@ -16,10 +16,10 @@ public class AESCipher {
    * @param keyHex - initial key as a String
    * @return keys - the 10 generated round keys
    */
-  public static String aesRoundKeys(String keyHex) {
+  public static String[] aesRoundKeys(String keyHex) {
     String result = "";
     //make key 4x4
-    String[][] outHex = String[4][4];
+    String[][] outHex = new String[4][4];
     outHex = getMatrix(keyHex);
     //return 10 generated keys
     String[] keys = new String[10];
