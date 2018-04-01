@@ -9,8 +9,6 @@
  * Given an initial key, generate 10 round keys according to AES definition
  */
 
-// TODO XOR doesn't work
-
 public class AESCipher {
 
   /**
@@ -19,15 +17,21 @@ public class AESCipher {
    * @param keyHex - initial key as a String
    * @return keys - the 10 generated round keys
    */
-  public static String[] aesRoundKeys(String keyHex) {
-    String result = "";
+  public static String aesRoundKeys(String keyHex) {
     //make key 4x4
-    String[][] outHex = new String[4][4];
-    outHex = getMatrix(keyHex);
-    //return 10 generated keys
-    String[] keys = new String[10];
-    keys = AESKeygen(outHex);
-    return keys;
+    String[][] outHex = getMatrix(keyHex);
+    String result = "";
+    //return 11 generated round keys
+    String[][] keys = AESKeygen(outHex);
+    for (int count = 0; count < 11; count++) {
+      for (int col = 0; col < 44; col++) {
+        for (int row = 0; row < 4; row++) {
+          result += keys[row][col].toUpperCase();
+        }
+      }
+      result += "\n";
+    }
+    return result;
   }
 
   /**
@@ -38,11 +42,14 @@ public class AESCipher {
    */
   static String[][] getMatrix(String key) {
     String[][] cipher = new String[4][4];
+    int row = 0;
+    int col = 0;
     for (int i = 0; i < key.length(); i += 2) {
-      for (int col = 0; col < 4; col++) {
-        for (int row = 0; row < 4; row++) {
-          cipher[row][col] = "" + key.charAt(i) + key.charAt(i + 1);
-        }
+      cipher[row][col] = "" + key.charAt(i) + key.charAt(i + 1);
+      row++;
+      if (row == 4) {
+        row = 0;
+        col++;
       }
     }
     return cipher;
@@ -54,23 +61,23 @@ public class AESCipher {
    * @param inHex - original key as 4x4 matrix
    * @return keys - original key + 10 round keys
    */
-  static String[] AESKeygen(String[][] inHex) {
+  static String[][] AESKeygen(String[][] inHex) {
     String[][] W = new String[4][44];
     // round 0
     // first 4 columns of W are first 4 columns of inHex
-    for(int i=0; i<4; i++) {
+    for (int i = 0; i < 4; i++) {
       W[i][0] = inHex[i][0];
       W[i][1] = inHex[i][1];
       W[i][2] = inHex[i][2];
       W[i][3] = inHex[i][3];
     }
     // 4 onwards
-    for(int j=4; j<44; j++) {
+    for (int j = 4; j < 44; j++) {
       // Column not multiple of 4
-      if (j%4!=0) {
+      if (j % 4 != 0) {
         // 3a: w(j) = w(j − 4) XOR w(j − 1)
-        for(int row = 0; row < 4; row ++) {
-          W[row][j] = xorMe(W[row][j-4], W[row][j-1]);
+        for (int row = 0; row < 4; row++) {
+          W[row][j] = xorMe(W[row][j - 4], W[row][j - 1]);
         }
       } else {
         // 3b
@@ -78,23 +85,17 @@ public class AESCipher {
         // w(j) = w(j − 4) XOR wnew
         String[] wnew = new String[4];
         String rconValue = aesRcon(j);
-        wnew[0] = xorMe(rconValue, aesSBox(W[1][j-1]));
-        wnew[1] = aesSBox(W[2][j-1]);
-        wnew[2] = aesSBox(W[3][j-1]);
-        wnew[3] = aesSBox(W[0][j-1]);
+        wnew[0] = xorMe(rconValue, aesSBox(W[1][j - 1]));
+        wnew[1] = aesSBox(W[2][j - 1]);
+        wnew[2] = aesSBox(W[3][j - 1]);
+        wnew[3] = aesSBox(W[0][j - 1]);
 
-        for(int row = 0; row < 4; row ++) {
-          W[row][j] = xorMe(W[row][j-4], wnew[row]);
+        for (int row = 0; row < 4; row++) {
+          W[row][j] = xorMe(W[row][j - 4], wnew[row]);
         }
       }
     }
-    String[] keys = new String[11];
-    for(int row = 0; row < 4; row ++) {
-      for(int col = 0; col < 44; col ++) {
-        keys[row]+= W[row][col];
-      }
-    }
-    return keys;
+    return W;
   }
 
   /**
@@ -120,11 +121,12 @@ public class AESCipher {
    */
   static String aesRcon(int round) {
     //TODO is it supposed to be round over 4 or just round?
-    char x = rcon[(int) Math.floor(round/4)];
+    char x = rcon[(int) Math.floor(round / 4)];
     String xAsHex = Integer.toHexString((int) x).toUpperCase();
     return xAsHex;
   }
 
+  //TODO fix XOR
   static String xorMe(String A, String B) {
     int A_int = Integer.parseInt(A, 16);
     int B_int = Integer.parseInt(B, 16);
