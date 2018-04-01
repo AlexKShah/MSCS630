@@ -20,16 +20,14 @@ public class AESCipher {
   public static String aesRoundKeys(String keyHex) {
     //make key 4x4
     String[][] outHex = getMatrix(keyHex);
-    String result = "";
+
     //return 11 generated round keys
     String[][] keys = AESKeygen(outHex);
-    for (int count = 0; count < 11; count++) {
-      for (int col = 0; col < 44; col++) {
-        for (int row = 0; row < 4; row++) {
-          result += keys[row][col].toUpperCase();
-        }
+    String result = "";
+    for (int col = 0; col < 44; col++) {
+      for (int row = 0; row < 4; row++) {
+        result += keys[row][col].toUpperCase();
       }
-      result += "\n";
     }
     return result;
   }
@@ -131,7 +129,8 @@ public class AESCipher {
     int A_int = Integer.parseInt(A, 16);
     int B_int = Integer.parseInt(B, 16);
     int ans_int = A_int ^ B_int;
-    String ans = String.format("%06x", ans_int);
+    String ans = String.format("%02x", ans_int);
+    ans.replace(' ', '0');
     return ans;
   }
 
