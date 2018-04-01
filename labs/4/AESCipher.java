@@ -64,16 +64,13 @@ public class AESCipher {
       W[i][2] = inHex[i][2];
       W[i][3] = inHex[i][3];
     }
-    // other rounds
-    for(int j=0; j<44; j++) {
+    // 4 onwards
+    for(int j=4; j<44; j++) {
       // Column not multiple of 4
       if (j%4!=0) {
         // 3a: w(j) = w(j − 4) XOR w(j − 1)
         for(int row = 0; row < 4; row ++) {
-          int A = Integer.parseInt(W[row][j-4], 16);
-          int B = Integer.parseInt(W[row][j-1], 16);
-          W[row][j] = (A.charAt(0))^(B.charAt(0));
-
+          W[row][j] = xorMe(W[row][j-4], W[row][j-1]);
         }
       } else {
         // 3b
@@ -81,13 +78,13 @@ public class AESCipher {
         // w(j) = w(j − 4) XOR wnew
         String[] wnew = new String[4];
         String rconValue = aesRcon(j);
-        wnew[0] = rconValue ^ aesSBox(W[1][j-1]);
+        wnew[0] = xorMe(rconValue, aesSBox(W[1][j-1]));
         wnew[1] = aesSBox(W[2][j-1]);
         wnew[2] = aesSBox(W[3][j-1]);
         wnew[3] = aesSBox(W[0][j-1]);
 
         for(int row = 0; row < 4; row ++) {
-          W[row][j] = W[row][j-4] ^ wnew[row];
+          W[row][j] = xorMe(W[row][j-4], wnew[row]);
         }
       }
     }
@@ -126,6 +123,14 @@ public class AESCipher {
     char x = rcon[(int) Math.floor(round/4)];
     String xAsHex = Integer.toHexString((int) x).toUpperCase();
     return xAsHex;
+  }
+
+  static String xorMe(String A, String B) {
+    int A_int = Integer.parseInt(A, 16);
+    int B_int = Integer.parseInt(B, 16);
+    int ans_int = A_int ^ B_int;
+    String ans = String.format("%06x", ans_int);
+    return ans;
   }
 
   // SBox Substitutions
