@@ -16,10 +16,13 @@ public class DriverAES {
     //input: some key
     Scanner input = new Scanner(System.in);
     String key = input.next().toUpperCase();
+
     //print initial key
-    System.out.println(key);
+    //System.out.println("Initial key: \n" + key + "\n");
+
     //Get and print 10 generated keys
     String keys = AESCipher.aesRoundKeys(key);
+    //System.out.println("Round keys: \n");
     System.out.println(keys);
   }
 }

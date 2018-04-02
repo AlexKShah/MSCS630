@@ -18,16 +18,21 @@ public class AESCipher {
    * @return keys - the 10 generated round keys
    */
   public static String aesRoundKeys(String keyHex) {
-    //make key 4x4
+    // make key 4x4
     String[][] outHex = getMatrix(keyHex);
 
-    //return 11 generated round keys
+    // generate round keys
     String[][] keys = AESKeygen(outHex);
     String result = "";
-    for (int col = 0; col < 44; col++) {
-      for (int row = 0; row < 4; row++) {
-        result += keys[row][col].toUpperCase();
+
+    // add each line to result
+    for (int count = 0; count < 11; count++) {
+      for (int col = count * 4; col < count * 4 + 4; col++) {
+        for (int row = 0; row < 4; row++) {
+          result += keys[row][col].toUpperCase();
+        }
       }
+      result += "\n";
     }
     return result;
   }
@@ -42,13 +47,17 @@ public class AESCipher {
     String[][] cipher = new String[4][4];
     int row = 0;
     int col = 0;
+
+    // Iterate by 2s, add 2 chars to represent hex
     for (int i = 0; i < key.length(); i += 2) {
       cipher[row][col] = "" + key.charAt(i) + key.charAt(i + 1);
       row++;
+
       if (row == 4) {
         row = 0;
         col++;
       }
+
     }
     return cipher;
   }
@@ -61,6 +70,7 @@ public class AESCipher {
    */
   static String[][] AESKeygen(String[][] inHex) {
     String[][] W = new String[4][44];
+
     // round 0
     // first 4 columns of W are first 4 columns of inHex
     for (int i = 0; i < 4; i++) {
@@ -69,18 +79,24 @@ public class AESCipher {
       W[i][2] = inHex[i][2];
       W[i][3] = inHex[i][3];
     }
-    // 4 onwards
+
+    // round 4 onwards
     for (int j = 4; j < 44; j++) {
+
       // Column not multiple of 4
       if (j % 4 != 0) {
+
         // 3a: w(j) = w(j − 4) XOR w(j − 1)
         for (int row = 0; row < 4; row++) {
           W[row][j] = xorMe(W[row][j - 4], W[row][j - 1]);
         }
+
       } else {
         // 3b
         // wnew = [ (Rcon(i) XOR Sbox(w1,j−1)), Sbox(w2,j−1), Sbox(w3,j−1), Sbox(w0,j−1) ]
         // w(j) = w(j − 4) XOR wnew
+
+        // wnew = [ (Rcon(i) XOR Sbox(w1,j−1)), Sbox(w2,j−1), Sbox(w3,j−1), Sbox(w0,j−1) ]
         String[] wnew = new String[4];
         String rconValue = aesRcon(j);
         wnew[0] = xorMe(rconValue, aesSBox(W[1][j - 1]));
@@ -88,9 +104,11 @@ public class AESCipher {
         wnew[2] = aesSBox(W[3][j - 1]);
         wnew[3] = aesSBox(W[0][j - 1]);
 
+        // w(j) = w(j − 4) XOR wnew
         for (int row = 0; row < 4; row++) {
           W[row][j] = xorMe(W[row][j - 4], wnew[row]);
         }
+
       }
     }
     return W;
@@ -103,10 +121,10 @@ public class AESCipher {
    * @return xAsHex - SBox substituted character in hex
    */
   static String aesSBox(String inHex) {
-    //hex to int for index
+    // hex to int for index
     int index = Integer.parseInt(inHex, 16);
     char x = sbox[index];
-    //convert to capitalized String
+    // convert to capitalized String
     String xAsHex = Integer.toHexString((int) x).toUpperCase();
     return xAsHex;
   }
@@ -115,22 +133,26 @@ public class AESCipher {
    * Substitutes value based on which round we're on
    *
    * @param round - the current round
-   * @return - Substituted value
+   * @return xAsHex- Substituted value
    */
   static String aesRcon(int round) {
-    //TODO is it supposed to be round over 4 or just round?
     char x = rcon[(int) Math.floor(round / 4)];
     String xAsHex = Integer.toHexString((int) x).toUpperCase();
     return xAsHex;
   }
 
-  //TODO fix XOR
+  /**
+   * Performs an xor on two strings
+   *
+   * @param A - left side of xor
+   * @param B - right side of xor
+   * @return ans - the xor result as a string
+   */
   static String xorMe(String A, String B) {
     int A_int = Integer.parseInt(A, 16);
     int B_int = Integer.parseInt(B, 16);
     int ans_int = A_int ^ B_int;
     String ans = String.format("%02x", ans_int);
-    ans.replace(' ', '0');
     return ans;
   }
 
