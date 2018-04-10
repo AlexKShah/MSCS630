@@ -4,10 +4,16 @@
 \usepackage{graphicx}
 \usepackage{indentfirst}
 \usepackage{float}
+\usepackage{listings}
 
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+}
 
 \begin{document}
-
 
 \title{EncryptZip: \\ Compressed, Encrypted Containers on Android \\ Project Milestone}
 \author{Alex Shah}
@@ -26,5 +32,49 @@ While most desktop systems have applications to accomplish the container level o
 
 \section{Methodology}
 Utilizing the Android SDK and available APIs provided by Google and within Java, it’s perfectly feasible to encrypt files, zip them into a container, and encrypt the container itself. This also has an intended side effect of reducing the file size by using compression, as well as ensuring that containers are dynamically sized. In addition, it would then be trivial to compute the hash of a container for authenticating the contents of a container as an added measure of security. Users can also use built in Google drive support to store, share, or keep an encrypted zip container synchronized between two remote parties.
+
+\section{Experiments}
+Various examples of compression in Android can be found using Java's built in zip functionality. To implement directory unzipping in Android it is necessary to use a buffer and an InputStream. For example:
+
+\begin{lstlisting}[language=Java]
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import android.content.Context;
+import android.util.Log;
+
+public class Decompress {
+    private static final int BUFFER_SIZE = 1024 * 10;
+
+    public static void unzipFromAssets(Context context, String zipFile, String destination) {
+		destination = context.getFilesDir().getAbsolutePath();
+		InputStream stream = context.getAssets().open(zipFile);
+		unzip(stream, destination);
+    }
+
+
+    public static void unzip(InputStream stream, String destination) {
+        byte[] buffer = new byte[BUFFER_SIZE];
+        ZipInputStream zin = new ZipInputStream(stream);
+		.
+		.
+		.
+         zin.close();
+    }
+}
+\end{lstlisting}
+
+While Java contains its own implementation of AES, as well as easy to access Cipher key making and padding, we have created an implementation of AES in class, so it is necessary to use some aspects of Java's built in functions while also overriding some with functions we have created in class. 
+
+\begin{lstlisting}[language=Java]
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+\end{lstlisting}
+
+\section{Conclusion}
+Thus far, implementing components of the project have been successful for the parts individually. Combining these parts to create a cohesive application will be more difficult, but rewarding. The project is on track, and all that's left is to assemble the pieces, benchmark the performance, and optimize.
 
 \end{document}
