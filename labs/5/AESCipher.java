@@ -37,20 +37,30 @@ public class AESCipher {
     }
     return result;
   }
-  //TODO 5 functions: AES, AESStateXOR, AESNibbleSub, AESShiftRow, AESMixColumn
+  //TODO
   public static String AES(String pTextHex, String keyHex) {
     return "";
   }
-  public static String AESStateXOR(String sHex, String keyHex) {
+
+  public static String[][] AESStateXOR(String[][] sHex, String[][] keyHex) {
+    String[][] out = new String[4][4];
+    for (int i = 0; i < 4; i++) {
+      for (int j = 0; j < 4; j++) {
+        out[j][i] = xorMe(xHex[j][i], keyHex[i][j]);
+      }
+    }
+    return out;
+  }
+  // TODO
+  public static String[][] AESNibbleSub(String[][] inStateHex) {
     return "";
   }
-  public static String AESNibbleSub(String inStateHex) {
+  // TODO
+  public static String[][] AESShiftRow(String[][] inStateHex) {
     return "";
   }
-  public static String AESShiftRow(String inStateHex) {
-    return "";
-  }
-  public static String AESMixColumn(String inStateHex) {
+  // TODO
+  public static String[][] AESMixColumn(String[][] inStateHex) {
     return "";
   }
 
