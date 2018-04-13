@@ -17,13 +17,21 @@ public class DriverAES {
     //input: some key
     Scanner input = new Scanner(System.in);
     String key = input.next().toUpperCase();
+    String plaintext = input.next().toUpperCase();
 
     //print initial key
-    //System.out.println("Initial key: \n" + key + "\n");
+    System.out.println("Initial key: \n" + key + "\n");
 
-    //Get and print 10 generated keys
+    //Generate keys
     String keys = AESCipher.aesRoundKeys(key);
-    //System.out.println("Round keys: \n");
+    //Encrypt
+    String ciphertext = AESCipher.AES(key, plaintext);
+
+    //Print keys
+    System.out.println("Round keys: \n");
     System.out.println(keys);
+    //Print result
+    System.out.println("Ciphertext: \n");
+    System.out.println(ciphertext);
   }
 }
