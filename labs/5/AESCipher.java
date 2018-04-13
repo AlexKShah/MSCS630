@@ -55,12 +55,26 @@ public class AESCipher {
 
   // TODO
   public static String[][] AESNibbleSub(String[][] inStateHex) {
-    return "";
+    String[][] out = new String[4][4];
+    for (int i = 0; i < 4; i++) {
+      for (int j = 0; j < 4; j++) {
+        out[i][j] = aesSBox(inStateHex[i][j]);
+      }
+    }
+    return out;
   }
 
   // TODO
   public static String[][] AESShiftRow(String[][] inStateHex) {
-    return "";
+    String[][] out = new String[4][4];
+
+    for (int col = 0; col < 4; col++) {
+      out[0][col] = inStateHex[1][col];
+      out[1][col] = inStateHex[2][col];
+      out[2][col] = inStateHex[3][col];
+      out[3][col] = inStateHex[0][col];
+    }
+    return out;
   }
 
   // TODO
