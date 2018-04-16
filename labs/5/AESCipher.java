@@ -40,7 +40,30 @@ public class AESCipher {
 
   //TODO
   public static String AES(String pTextHex, String keyHex) {
-    return "";
+    String[][] plaintext = getMatrix(pTextHex);
+    String[][] W = AESKeygen(getMatrix(keyHex));
+    String[][] ciphertext = new String[4][4];
+    String[][] currentKey = getMatrix(keyHex);
+
+    //initial XOR
+    ciphertext = AESStateXOR(plaintext, currentKey);
+
+    //do AES steps, 10 rounds
+    for (i=0; i<11; i++) {
+      //iterate round key
+      //?
+
+      //Nibble Substitution
+      ciphertext = AESNibbleSub(ciphertext);
+      //Shift Rows
+      ciphertext = AESShiftRow(ciphertext);
+      //TODO last round no mix
+      ciphertext = AESMixColumn(ciphertext);
+      //XOR with current key
+      ciphertext = AESStateXOR(ciphertext, currentKey);
+    }
+
+
   }
 
   public static String[][] AESStateXOR(String[][] sHex, String[][] keyHex) {
@@ -67,7 +90,6 @@ public class AESCipher {
   // TODO
   public static String[][] AESShiftRow(String[][] inStateHex) {
     String[][] out = new String[4][4];
-
     for (int col = 0; col < 4; col++) {
       out[0][col] = inStateHex[1][col];
       out[1][col] = inStateHex[2][col];
@@ -79,7 +101,7 @@ public class AESCipher {
 
   // TODO
   public static String[][] AESMixColumn(String[][] inStateHex) {
-    return "";
+
   }
 
   /**
