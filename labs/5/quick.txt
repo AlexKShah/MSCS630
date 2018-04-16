@@ -1,0 +1,2 @@
+cd /mnt/c/Users/alex/IdeaProjects/MSCS630/labs/5/
+javac AESCipher.java && javac DriverAES.java && java DriverAES < input.1
