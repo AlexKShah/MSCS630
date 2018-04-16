@@ -19,8 +19,8 @@ public class DriverAES {
     String key = input.next().toUpperCase();
     String plaintext = input.next().toUpperCase();
 
-    //print initial key
     System.out.println("Initial key: \n" + key + "\n");
+    System.out.println("Plaintext: \n" + plaintext + "\n");
 
     //Generate keys
     String keys = AESCipher.aesRoundKeys(key);

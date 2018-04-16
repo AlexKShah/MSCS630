@@ -67,8 +67,14 @@ public class AESCipher {
       //XOR with current key
       ciphertext = AESStateXOR(ciphertext, currentKey);
     }
-    //TODO return ciphertext as string
-    return "";
+    String ctxt="";
+    for (int row=0; row<4; row++) {
+      ctxt+=ciphertext[row][0];
+      ctxt+=ciphertext[row][1];
+      ctxt+=ciphertext[row][2];
+      ctxt+=ciphertext[row][3];
+    }
+    return ctxt.toUpperCase();
   }
 
   public static String[][] AESStateXOR(String[][] sHex, String[][] keyHex) {
@@ -148,7 +154,6 @@ public class AESCipher {
     int col = 0;
 
     // Iterate by 2s, add 2 chars to represent hex
-    //TODO index out of bounds here
     for (int i = 0; i < key.length(); i += 2) {
       cipher[row][col] = "" + key.charAt(i) + key.charAt(i + 1);
       row++;
