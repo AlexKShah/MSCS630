@@ -81,7 +81,7 @@ public class AESCipher {
     String[][] out = new String[4][4];
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
-        out[j][i] = xorMe(sHex[j][i], keyHex[i][j]);
+        out[i][j] = xorMe(sHex[i][j], keyHex[i][j]);
       }
     }
     return out;
