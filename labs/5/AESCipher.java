@@ -49,11 +49,11 @@ public class AESCipher {
     ciphertext = AESStateXOR(plaintext, currentKey);
 
     //do AES steps, 10 rounds
-    for (i = 0; i < 11; i++) {
+    for (int i = 0; i < 11; i++) {
       //iterate round key
       for (int j = 0; j < 4; j++) {
         for (int k = 0; k < 4; k++) {
-          roundKey[k][j] = W[k][(i * 4) + j];
+          currentKey[k][j] = W[k][(i * 4) + j];
         }
       }
       //Nibble Substitution
@@ -67,14 +67,15 @@ public class AESCipher {
       //XOR with current key
       ciphertext = AESStateXOR(ciphertext, currentKey);
     }
-    return ciphertext;
+    //TODO return ciphertext as string
+    return "";
   }
 
   public static String[][] AESStateXOR(String[][] sHex, String[][] keyHex) {
     String[][] out = new String[4][4];
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
-        out[j][i] = xorMe(xHex[j][i], keyHex[i][j]);
+        out[j][i] = xorMe(sHex[j][i], keyHex[i][j]);
       }
     }
     return out;
@@ -147,6 +148,7 @@ public class AESCipher {
     int col = 0;
 
     // Iterate by 2s, add 2 chars to represent hex
+    //TODO index out of bounds here
     for (int i = 0; i < key.length(); i += 2) {
       cipher[row][col] = "" + key.charAt(i) + key.charAt(i + 1);
       row++;
