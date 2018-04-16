@@ -51,19 +51,23 @@ public class AESCipher {
     //do AES steps, 10 rounds
     for (i=0; i<11; i++) {
       //iterate round key
-      //?
-
+      for (int j = 0; j < 4; j++) {
+        for (int k = 0; k < 4; k ++) {
+          roundKey[k][j] = W[k][(i*4)+j];
+        }
+      }
       //Nibble Substitution
       ciphertext = AESNibbleSub(ciphertext);
       //Shift Rows
       ciphertext = AESShiftRow(ciphertext);
-      //TODO last round no mix
-      ciphertext = AESMixColumn(ciphertext);
+      //Mix Columns except for last round
+      if (i<10) {
+        ciphertext = AESMixColumn(ciphertext);
+      }
       //XOR with current key
       ciphertext = AESStateXOR(ciphertext, currentKey);
     }
-
-
+    return ciphertext;
   }
 
   public static String[][] AESStateXOR(String[][] sHex, String[][] keyHex) {
