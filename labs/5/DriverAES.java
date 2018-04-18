@@ -31,7 +31,7 @@ public class DriverAES {
     //System.out.println("Round keys: \n");
     //System.out.println(keys);
     //Print result
-    System.out.println("Ciphertext: \n");
+    System.out.println("Ciphertext:");
     System.out.println(ciphertext);
   }
 }
