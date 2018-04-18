@@ -38,18 +38,6 @@ public class AESCipher {
     return result;
   }
 
-  public static String MatrixToString(String[][] matrix) {
-    String ctxt = "";
-    for (int row = 0; row < 4; row++) {
-      ctxt += matrix[row][0];
-      ctxt += matrix[row][1];
-      ctxt += matrix[row][2];
-      ctxt += matrix[row][3];
-    }
-    return ctxt.toUpperCase();
-
-  }
-
   //TODO
   public static String AES(String pTextHex, String keyHex) {
     String[][] plaintext = getMatrix(pTextHex);
@@ -63,10 +51,10 @@ public class AESCipher {
     //System.out.println("\n Round 1 XOR: \n \n" + MatrixToString(ciphertext));
 
     //do AES steps, 10 rounds
-    for (int round = 1; round < 2; round++) {
+    for (int round = 1; round < 11; round++) {
 
-      System.out.println("\n Round #" + round);
-      System.out.println("\n Starting ciphertext = \n \n" + MatrixToString(ciphertext));
+      //System.out.println("\n Round #" + round);
+      //System.out.println("\n Starting ciphertext = \n \n" + MatrixToString(ciphertext));
 
       //iterate round key
       //problem here
@@ -76,26 +64,28 @@ public class AESCipher {
         }
       }
 
-      System.out.println("\n Current Key = \n \n" + MatrixToString(currentKey));
+      //System.out.println("\n Current Key = \n \n" + MatrixToString(currentKey));
 
       //Nibble Substitution
       ciphertext = AESNibbleSub(ciphertext);
-      System.out.println("\n After nibble sub = \n \n" + MatrixToString(ciphertext));
+      //System.out.println("\n After nibble sub = \n \n" + MatrixToString(ciphertext));
 
       //Shift Rows
       ciphertext = AESShiftRow(ciphertext);
-      System.out.println("\n After shift row = \n \n" + MatrixToString(ciphertext));
+      //System.out.println("\n After shift row = \n \n" + MatrixToString(ciphertext));
 
       //Mix Columns except for last round
       if (round < 10) {
         ciphertext = AESMixColumn(ciphertext);
-        System.out.println("\n After mix col = \n \n" + MatrixToString(ciphertext) + "\n");
+        //System.out.println("\n After mix col = \n \n" + MatrixToString(ciphertext) + "\n");
       }
       //XOR with current key
       ciphertext = AESStateXOR(ciphertext, currentKey);
-      System.out.println("\n After end XOR = \n \n" + MatrixToString(ciphertext));
+      //System.out.println("\n After end XOR = \n \n" + MatrixToString(ciphertext));
+      //ciphertext = rowtocol(ciphertext);
+      //System.out.println("\n After Round #" + round + "\n \n" + MatrixToString(ciphertext));
     }
-
+    ciphertext = rowtocol(ciphertext);
     return MatrixToString(ciphertext);
   }
 
@@ -138,48 +128,52 @@ public class AESCipher {
     String[][] out = new String[4][4];
     String[][] out2 = new String[4][4];
     String[][] tmp = new String[4][4];
-    for (int i = 0; i < 4; i++) {
-      for (int j = 0; j < 4; j++) {
-        tmp[i][j] = inStateHex[j][i];
-      }
-    }
     int[] QQ = new int[4];
     int[] S = new int[4];
-    //convert inStateHex numbers to Int
+
+    // flip rows to cols
+    tmp = rowtocol(inStateHex);
+
     for (int r = 0; r < 4; r++) {
       for (int c = 0; c < 4; c++) {
         QQ[c] = Integer.parseInt(tmp[r][c], 16);
-        //System.out.println("QQ[" + c + "] = " + Integer.toHexString(QQ[c]));
       }
-      /*
-      from NIST paper pp. 18
-      https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf
-
-      S'[0] = {2}S[0] XOR {3}S[1] XOR S[2]    XOR S[3]
-      S'[1] = S[0]    XOR {2}S[1] XOR {3}S[2] XOR S[3]
-      S'[2] = S[0]    XOR S[1]    XOR {2}S[2] XOR {3}S[3]
-      S'[3] = {3}S[0] XOR S[1]    XOR S[2]    XOR {2}S[3]
-       */
       S[0] = mixcol2[QQ[0]] ^ mixcol3[QQ[1]] ^ QQ[2] ^ QQ[3];
       S[1] = QQ[0] ^ mixcol2[QQ[1]] ^ mixcol3[QQ[2]] ^ QQ[3];
       S[2] = QQ[0] ^ QQ[1] ^ mixcol2[QQ[2]] ^ mixcol3[QQ[3]];
       S[3] = mixcol3[QQ[0]] ^ QQ[1] ^ QQ[2] ^ mixcol2[QQ[3]];
 
-      //build back into 2d matrix
+      //build back into 2d matrix, don't lose 0's
       for (int k = 0; k < 4; k++) {
         String ans = String.format("%02x", S[k]);
         out[r][k] = ans;
       }
-
-      for (int i2 = 0; i2 < 4; i2++) {
-        for (int j2 = 0; j2 < 4; j2++) {
-          out2[i2][j2] = out[j2][i2];
-        }
-      }
+      // flip back
+      out2 = rowtocol(out);
     }
     return out2;
   }
-
+  //helper
+  public static String MatrixToString(String[][] matrix) {
+    String ctxt = "";
+    for (int row = 0; row < 4; row++) {
+      ctxt += matrix[row][0];
+      ctxt += matrix[row][1];
+      ctxt += matrix[row][2];
+      ctxt += matrix[row][3];
+    }
+    return ctxt.toUpperCase();
+  }
+  //helper
+  public static String[][] rowtocol(String[][] matrix) {
+    String[][] tmp = new String[4][4];
+    for (int i = 0; i < 4; i++) {
+      for (int j = 0; j < 4; j++) {
+        tmp[i][j] = matrix[j][i];
+      }
+    }
+    return tmp;
+  }
   /**
    * converts a String key to 4x4 String[][] hex representation
    *

@@ -19,13 +19,13 @@ public class DriverAES {
     String key = input.next().toUpperCase();
     String plaintext = input.next().toUpperCase();
 
-    //System.out.println("Initial key: \n" + key + "\n");
-    //System.out.println("Plaintext: \n" + plaintext + "\n");
+    System.out.println("Initial key: \n" + key + "\n");
+    System.out.println("Plaintext: \n" + plaintext + "\n");
 
     //Generate keys
     String keys = AESCipher.aesRoundKeys(key);
     //Encrypt
-    String ciphertext = AESCipher.AES(key, plaintext);
+    String ciphertext = AESCipher.AES(plaintext, key);
 
     //Print keys
     //System.out.println("Round keys: \n");
