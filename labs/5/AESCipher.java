@@ -134,12 +134,16 @@ public class AESCipher {
   // Problem here
   public static String[][] AESMixColumn(String[][] inStateHex) {
     String[][] out = new String[4][4];
+    //String[][] tmp = new String [4][4];
+    //for (int i = 0; i<4; i++){
+      //flip rows to cols?
+    //}
     int[] QQ = new int[4];
     int[] S = new int[4];
     //convert inStateHex numbers to Int
-    for (int i = 0; i < 4; i++) {
-      for (int j = 0; j < 4; j++) {
-        QQ[j] = Integer.parseInt(inStateHex[i][j], 16);
+    for (int r = 0; r < 4; r++) {
+      for (int c = 0; c < 4; c++) {
+        QQ[c] = Integer.parseInt(inStateHex[r][c], 16);
       }
       /*
       from NIST paper pp. 18
