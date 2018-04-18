@@ -38,6 +38,18 @@ public class AESCipher {
     return result;
   }
 
+  public static String MatrixToString(String[][] matrix) {
+    String ctxt = "";
+    for (int row = 0; row < 4; row++) {
+      ctxt += matrix[row][0];
+      ctxt += matrix[row][1];
+      ctxt += matrix[row][2];
+      ctxt += matrix[row][3];
+    }
+    return ctxt.toUpperCase();
+
+  }
+
   //TODO
   public static String AES(String pTextHex, String keyHex) {
     String[][] plaintext = getMatrix(pTextHex);
@@ -48,33 +60,42 @@ public class AESCipher {
     //initial XOR
     ciphertext = AESStateXOR(plaintext, currentKey);
 
+    System.out.println("\n Round 1 XOR: \n \n" + MatrixToString(ciphertext));
+
     //do AES steps, 10 rounds
-    for (int i = 0; i < 11; i++) {
+    for (int i = 1; i < 11; i++) {
+
+      System.out.println("\n Round #" + i);
+      System.out.println("\n Starting ciphertext = \n \n" + MatrixToString(ciphertext));
+
       //iterate round key
       for (int j = 0; j < 4; j++) {
         for (int k = 0; k < 4; k++) {
           currentKey[k][j] = W[k][(i * 4) + j];
         }
       }
+
+      System.out.println("\n Current Key = \n \n" + MatrixToString(currentKey));
+
       //Nibble Substitution
       ciphertext = AESNibbleSub(ciphertext);
+      System.out.println("\n After nibble sub = \n \n" + MatrixToString(ciphertext));
+
       //Shift Rows
       ciphertext = AESShiftRow(ciphertext);
+      System.out.println("\n After shift row = \n \n" + MatrixToString(ciphertext));
+
       //Mix Columns except for last round
       if (i < 10) {
         ciphertext = AESMixColumn(ciphertext);
+        System.out.println("\n After mix col = \n \n" + MatrixToString(ciphertext));
       }
       //XOR with current key
       ciphertext = AESStateXOR(ciphertext, currentKey);
+      System.out.println("\n After end XOR = \n \n" + MatrixToString(ciphertext));
     }
-    String ctxt="";
-    for (int row=0; row<4; row++) {
-      ctxt+=ciphertext[row][0];
-      ctxt+=ciphertext[row][1];
-      ctxt+=ciphertext[row][2];
-      ctxt+=ciphertext[row][3];
-    }
-    return ctxt.toUpperCase();
+
+    return MatrixToString(ciphertext);
   }
 
   public static String[][] AESStateXOR(String[][] sHex, String[][] keyHex) {
@@ -98,19 +119,19 @@ public class AESCipher {
     return out;
   }
 
-  // TODO
+  // Fixed
   public static String[][] AESShiftRow(String[][] inStateHex) {
     String[][] out = new String[4][4];
-    for (int col = 0; col < 4; col++) {
-      out[0][col] = inStateHex[1][col];
-      out[1][col] = inStateHex[2][col];
-      out[2][col] = inStateHex[3][col];
-      out[3][col] = inStateHex[0][col];
+    out[0] = inStateHex[0];
+    for (int r = 1; r < 4; r++) {
+      for (int c = 0; c < 4; c++) {
+        out[r][c] = inStateHex[r][(c + r) % 4];
+      }
     }
     return out;
   }
 
-  // TODO
+  // Problem here
   public static String[][] AESMixColumn(String[][] inStateHex) {
     String[][] out = new String[4][4];
     int[] QQ = new int[4];
