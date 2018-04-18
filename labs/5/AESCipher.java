@@ -134,10 +134,6 @@ public class AESCipher {
   // Problem here
   public static String[][] AESMixColumn(String[][] inStateHex) {
     String[][] out = new String[4][4];
-    //String[][] tmp = new String [4][4];
-    //for (int i = 0; i<4; i++){
-      //flip rows to cols?
-    //}
     int[] QQ = new int[4];
     int[] S = new int[4];
     //convert inStateHex numbers to Int
@@ -154,14 +150,14 @@ public class AESCipher {
       S'[2] = S[0]    XOR S[1]    XOR {2}S[2] XOR {3}S[3]
       S'[3] = {3}S[0] XOR S[1]    XOR S[2]    XOR {2}S[3]
        */
-      S[0] = mixcol2[QQ[0]] ^ mixcol3[QQ[1]] ^ QQ[2] ^ QQ[3];
-      S[1] = QQ[0] ^ mixcol2[QQ[1]] ^ mixcol3[QQ[2]] ^ QQ[3];
-      S[2] = QQ[0] ^ QQ[1] ^ mixcol2[QQ[2]] ^ mixcol3[QQ[3]];
-      S[3] = mixcol3[QQ[0]] ^ QQ[1] ^ QQ[2] ^ mixcol2[QQ[3]];
+      S[0] = mixcol2[QQ[0]] ^ mixcol3[QQ[1]] ^ QQ[2]          ^ QQ[3];
+      S[1] = QQ[0]          ^ mixcol2[QQ[1]] ^ mixcol3[QQ[2]] ^ QQ[3];
+      S[2] = QQ[0]          ^ QQ[1]          ^ mixcol2[QQ[2]] ^ mixcol3[QQ[3]];
+      S[3] = mixcol3[QQ[0]] ^ QQ[1]          ^ QQ[2]          ^ mixcol2[QQ[3]];
 
       //build back into 2d matrix
       for (int k = 0; k < 4; k++) {
-        out[i][k] = Integer.toHexString(S[k]);
+        out[r][k] = Integer.toHexString((int) S[k]).toUpperCase();
       }
     }
     return out;
