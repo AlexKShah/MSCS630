@@ -19,8 +19,8 @@ public class DriverAES {
     String key = input.next().toUpperCase();
     String plaintext = input.next().toUpperCase();
 
-    System.out.println("Initial key: \n" + key + "\n");
-    System.out.println("Plaintext: \n" + plaintext + "\n");
+    //System.out.println("Initial key: \n" + key + "\n");
+    //System.out.println("Plaintext: \n" + plaintext + "\n");
 
     //Generate keys
     String keys = AESCipher.aesRoundKeys(key);
@@ -28,8 +28,8 @@ public class DriverAES {
     String ciphertext = AESCipher.AES(key, plaintext);
 
     //Print keys
-    System.out.println("Round keys: \n");
-    System.out.println(keys);
+    //System.out.println("Round keys: \n");
+    //System.out.println(keys);
     //Print result
     System.out.println("Ciphertext: \n");
     System.out.println(ciphertext);
