@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     // Exception prints failure
-                    Toast.makeText(MainActivity.this, "Decrypted Failed!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Decryption Failed!", Toast.LENGTH_LONG).show();
                 }
             }
         });
