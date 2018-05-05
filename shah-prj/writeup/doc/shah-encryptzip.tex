@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsfonts}
 \usepackage{graphicx}
+\usepackage{subfig}
 \graphicspath{ {images/} }
 \usepackage{indentfirst}
 \usepackage{float}
@@ -23,19 +24,33 @@
 \maketitle
 
 \section{Abstract}
-This project sets out to implement encryption on zip based containers on the Android platform. This was accomplished with tools available in the Android SDK Java. Containers are created by zipping a folder's contents on the user's device. Zipping a folder compresses it to save file size. A key is generated using SHA-256 from the user's provided password. The zip container is then encrypted with AES using the generated key. These containers are thereby compressed, encrypted, and inherently portable.
+This project sets out to implement encryption on zip based containers on the Android platform. This was accomplished with tools available in the Android SDK and Java. Containers are created by zipping a folder's contents on the user's device. Zipping a folder compresses it to save file size. A key is generated using SHA-256 from the user's provided password. The zipped container is then encrypted with AES using the generated key. These containers are thereby compressed, encrypted, and inherently portable.
 
 \section{Introduction}
-Encrypting files is a common practice to prevent unauthorized or unintended access to sensitive information. However, encrypting each file is only one facet of security in a system. Encrypting the container which sensitive information is held can prove more useful than encrypting on a per file basis, or in addition to it. This is especially useful in applications where the system cannot be entirely secured. It can be used in addition to measures such as file and disk based encryption schemes. These three levels, file level, container level, and system/disk level encryption ensure that access is compartmentalized and can further secure a user's documents from unwanted access. 
+
+\subsection{Encryption}
+Encrypting files is a common practice to prevent unauthorized or unintended access to sensitive information. However, encrypting each file is only one facet of security in a system. Encrypting a container which holds sensitive information can prove more useful than encrypting on a per file basis. This is especially useful in applications where the system cannot be entirely secured. It can also be used in addition to measures such as file and disk based encryption schemes. These three levels, file level, container level, and system/disk level encryption ensure that access is compartmentalized and can further secure a user's documents from unwanted access. 
+
+\subsection{Compression}
+By utilizing compression by zipping the contents of a directory, the container zip is only as large as its contents. In the mobile space this is especially important due to limitations in storage capacity and transmitting containers over a network.
 
 \section{Background}
-While desktop operating systems have applications to create encrypted containers, such as Veracrypt, Android does not have a native application and third party implementations use proprietary methods. In addition, solutions such as Veracrypt create fixed sized containers regardless of the size of the contents of the container. This is especially important in the mobile environment where space is at a premium and transmission of containers over a network may prove limited. The goal of this project is to use built in features and standard systems to create a container level encryption scheme on the Android mobile platform which solves these problems by using compressed zip archives.
+
+\subsection{Containers}
+While desktop operating systems have applications to create encrypted containers, such as Veracrypt, Android does not have a native implementation. There are third party means, however these implementations use proprietary methods. In addition, solutions such as Veracrypt create fixed sized containers regardless of the size of the contents of the container. The goal of this project is to use built in features and standard systems to create a container level encryption scheme on the Android mobile platform which solves these problems.
+
+\subsection{Solutions}
+Zipping a directory creates a container no larger than its contents. By using zip compression, this solves the problem that Veracrypt and other third party implementations have, that the container does not remain a fixed size. Adding and removing documents from the container requires no resizing. The zip and and encryption methods work regardless of the files present in the container, including text, image, and video files.
 
 \section{Methodology}
-Utilizing the Android SDK and available cryptography libraries provided by Google and within Java, it is feasible to zip and encrypt the files on the emulated storage on an Android device. Using java.io and java.zip libraries, the users documents are compressed in a zip archive. A key is generated using SHA-256 with a provided password. This key is then used with AES from the javax.crypto library to encrypt the byte stream of the zip contents. The resulting file is unreadable but using the reverse procedure can be recovered fully. The encrypted zip is not affected by incorrect decryption, using the methods implemented. The encryption must use a password, as no password would be insecure, or at worst a randomly generated key would not be able to be decrypted. Users can also use built in Google drive support to store, share, or keep an encrypted zip container synchronized between devices.
+\subsection{Zip Implementation}
+Utilizing the Android SDK and available cryptography libraries provided by Google and Java, it is feasible to implement both the zip and encryption methods to secure the files on an Android device. The zip methods were accomplished using java.io and java.zip libraries wherein the users documents are gathered in a file list, then using a zip output stream, are written to the zip path. 
+
+\subsection{Encryption Implementation}
+Using buttons and on click listener from Android Studio's tools, a use provides a password in the password field. When the encrypt button is pressed, the provided password is read in to be used as a key for encryption. A key is generated using SHA-256 with the provided password. This was accomplished with javax.crypto and java.security libraries. From the javax.crypto library we use AES with the key to encrypt a byte stream of the zip contents. This allows us to pass in the zip as a byte[] in order to impartially process the contents of the archive. The resulting encrypted file is unreadable without first being decrypted by the reverse procedure. The forward and reverse methods are robust at preventing accidental damage to the archive. The encrypted zip is not affected by incorrect decryption attempts. As an added precaution, the encryption step must use a password. Providing no password would either be insecure or at worst a randomly generated key would not be able to be decrypted, and the contents of the container would be lost. 
 
 \section{Experiments}
-To implement directory zipping in Android it is necessary to use a buffer and an InputStream. For example:
+To implement directory zipping in Android it was necessary to use a buffer to prevent bottlenecks. For example:
 
 \begin{lstlisting}[language=Java]
 fileOutputStream = new FileOutputStream(file);
@@ -65,9 +80,12 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.PBEKeySpec;
 \end{lstlisting}
 
-These enable us to securely generate a 256 bit key using the provided password as well as encrypt the zip using AES with a 256 bit key, better than the 128 bits required and greater key length than what our in class implementation allowed.
+These enable us to securely generate a 256 bit key using the provided password as well as encrypt the zip using AES with a 256 bit key, better than AES at 128 bits, and greater key length than what our in class implementation allowed.
 
 In order to encrypt the zip, javax crypto and java security libraries are used in accordance to Android's security guidelines to perform SHA 256 and AES using a 256 bit key.
+
+\clearpage
+
 \begin{lstlisting}[language=Java]
 // generate key from password using AES
     public static SecretKey generateKey(char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -97,31 +115,58 @@ In order to encrypt the zip, javax crypto and java security libraries are used i
 
 \section{App}
 
-The main screen of the EncryptZip app. The zip, unzip, encrypt, and decrypt buttons function as anticipated, and in that order to create a container and to open it.
+\subsection{UI}
+
+The main screen of the EncryptZip app. The zip, unzip, encrypt, and decrypt buttons use on click listeners to perform their named functions.
+
 \begin{figure}[H]
-\includegraphics[width=8cm]{main1}
+\centering
+\includegraphics[width=9.5cm]{main1}
+\caption{EncryptZip Main Screen}
 \end{figure}
 
 \clearpage
 
 Toast notifications are shown to the user to indicate whether an action has completed successfully or not.
-\begin{figure}[h]
-\includegraphics[width=4cm]{toast1}
-\end{figure}
-\begin{figure}[h]
-\includegraphics[width=4cm]{toast2}
+\begin{figure}
+    \centering
+    \subfloat[Success!]{{\includegraphics[width=5cm]{toast1} }}
+    \qquad
+    \subfloat[Failure]{{\includegraphics[width=5cm]{toast2} }}
+    \caption{Toast Notifications}
+    \label{fig:toast}
 \end{figure}
 
 \clearpage
 
 The data folder is accessible through the file system on Android devices. The contents of the data folder are zipped and the resulting zip file is stored in the zip folder.
 \begin{figure}[H]
+\centering
 \includegraphics[width=8cm]{file1}
+\caption{File System}
+\end{figure}
+
+\clearpage
+
+\subsection{Main Flow}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{flow1}
+\caption{EncryptZip Flow}
 \end{figure}
 
 \section{Conclusion}
-stuff
+The project was a success. The contents of the Android directory are fully processed by the zip and unzip functions. The resulting zip files are able to be successfully encrypted and decrypted with a given key. The encryption scheme exceeds the requirements, using SHA 256 and AES with a 256 bit key. 
+
 \section{Sources}
-stuff
+
+ “Meet Android Studio  |  Android Developers.” Android Developers, developer.android.com/studio/intro/index.html.
+\\
+
+“Package Java.security.” 28 Mar. 2018, docs.oracle.com/javase/8/docs/api/java/security/package-summary.html.
+\\
+
+“Package Javax.crypto.” 28 Mar. 2018, docs.oracle.com/javase/8/docs/api/javax/crypto/package-summary.html. 
 
 \end{document}
